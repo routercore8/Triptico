@@ -1,493 +1,645 @@
-Entendido. Aquí tienes un tríptico digital interactivo con un efecto de "hojas deslizantes" (slide/carrusel), que incluye imágenes relacionadas con el proyecto de monitoreo hidrológico. Está diseñado para verse bien tanto en móviles como en laptops.
-
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-  <title>Tríptico IoT · Hidrológico · UNAS</title>
-  <!-- Font Awesome & Google Fonts -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>Tríptico IoT · Hidrológico · UNAS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      background: #dce8f0;
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 1.5rem 1rem;
-    }
+        body {
+            background: linear-gradient(145deg, #d4e4ee 0%, #b8cedc 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.8rem 1rem;
+        }
 
-    /* Contenedor principal estilo "libro/tríptico" */
-    .book-container {
-      max-width: 1100px;
-      width: 100%;
-      background: #edf4fa;
-      border-radius: 2.5rem 2.5rem 2rem 2rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 20, 40, 0.4);
-      overflow: hidden;
-      position: relative;
-    }
+        /* Contenedor principal */
+        .triptych {
+            max-width: 1140px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 3rem 3rem 2rem 2rem;
+            box-shadow: 0 30px 60px -18px rgba(0, 25, 45, 0.5);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
 
-    /* carrusel de páginas (hojas deslizantes) */
-    .pages-slider {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      background: #ffffff;
-      scrollbar-width: thin;
-      scrollbar-color: #2b7a94 #d4e3ed;
-    }
-    .pages-slider::-webkit-scrollbar {
-      height: 8px;
-    }
-    .pages-slider::-webkit-scrollbar-track {
-      background: #d4e3ed;
-      border-radius: 20px;
-    }
-    .pages-slider::-webkit-scrollbar-thumb {
-      background: #2b7a94;
-      border-radius: 20px;
-    }
+        /* Carrusel de hojas (scroll snap) */
+        .slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            background: #ffffff;
+            scrollbar-width: thin;
+            scrollbar-color: #2b7a94 #dce8f2;
+        }
 
-    /* cada hoja / slide */
-    .page {
-      flex: 0 0 100%;
-      scroll-snap-align: start;
-      padding: 1.8rem 2rem 2.2rem;
-      background: white;
-      display: flex;
-      flex-direction: column;
-      min-height: 480px;
-      transition: all 0.2s;
-    }
+        .slider::-webkit-scrollbar {
+            height: 6px;
+        }
+        .slider::-webkit-scrollbar-track {
+            background: #dce8f2;
+            border-radius: 20px;
+        }
+        .slider::-webkit-scrollbar-thumb {
+            background: #2b7a94;
+            border-radius: 20px;
+        }
 
-    @media (min-width: 800px) {
-      .page {
-        flex: 0 0 33.333%;
-        min-height: 520px;
-        padding: 2rem 2rem 2.2rem;
-      }
-    }
+        /* Cada hoja (slide) */
+        .page {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            padding: 2.2rem 2.2rem 2.5rem;
+            background: white;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+        }
 
-    /* header de cada página */
-    .page-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 3px solid #dce9f2;
-      padding-bottom: 0.8rem;
-      margin-bottom: 1.2rem;
-    }
-    .page-header i {
-      font-size: 1.8rem;
-      color: #1a5f78;
-      width: 2.4rem;
-      text-align: center;
-    }
-    .page-header h2 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #073b4f;
-      letter-spacing: -0.3px;
-    }
-    .page-number {
-      margin-left: auto;
-      background: #e1eef7;
-      padding: 0.2rem 1rem;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #1f6f8a;
-    }
+        @media (min-width: 820px) {
+            .page {
+                flex: 0 0 33.333%;
+                min-height: 520px;
+                padding: 2.4rem 2.4rem 2.8rem;
+            }
+        }
 
-    /* imágenes ilustrativas */
-    .img-placeholder {
-      background: #eaf2f8;
-      border-radius: 24px;
-      padding: 0.8rem 1.2rem;
-      margin: 0.6rem 0 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      border: 1px solid #caddf0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    }
-    .img-placeholder i {
-      font-size: 2.6rem;
-      color: #1d6c89;
-      width: 3rem;
-      text-align: center;
-    }
-    .img-placeholder .img-desc {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #134c61;
-      flex: 1;
-    }
-    .img-placeholder .img-tag {
-      background: #c4dceb;
-      padding: 0.15rem 1rem;
-      border-radius: 30px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #00435a;
-    }
+        /* Encabezado de página */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 3px solid #e6f0f7;
+            padding-bottom: 0.9rem;
+            margin-bottom: 1.4rem;
+        }
 
-    .img-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin: 0.4rem 0;
-    }
-    .img-row .mini-img {
-      background: #ddecf5;
-      border-radius: 16px;
-      padding: 0.4rem 1rem 0.4rem 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      border: 1px solid #c0d8e8;
-    }
-    .img-row .mini-img i {
-      font-size: 1.3rem;
-      color: #0b5a74;
-    }
+        .page-header i {
+            font-size: 2rem;
+            color: #14687f;
+            width: 2.6rem;
+            text-align: center;
+        }
 
-    /* contenido texto */
-    .page p {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: #1d3b4a;
-      margin-bottom: 0.5rem;
-    }
-    .page ul {
-      list-style: none;
-      margin: 0.2rem 0;
-    }
-    .page ul li {
-      padding: 0.3rem 0 0.3rem 1.8rem;
-      position: relative;
-      font-size: 0.92rem;
-      border-bottom: 1px solid #ecf3f9;
-    }
-    .page ul li:last-child {
-      border-bottom: none;
-    }
-    .page ul li i {
-      position: absolute;
-      left: 0;
-      top: 0.4rem;
-      color: #1f748f;
-      width: 1.4rem;
-      text-align: center;
-      font-size: 0.9rem;
-    }
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #083b4f;
+            letter-spacing: -0.02em;
+        }
 
-    .badge {
-      background: #dcecf5;
-      border-radius: 40px;
-      padding: 0.15rem 1.2rem;
-      font-weight: 600;
-      font-size: 0.7rem;
-      color: #07506b;
-      display: inline-block;
-      letter-spacing: 0.3px;
-      margin-right: 4px;
-    }
+        .page-number {
+            margin-left: auto;
+            background: #e3eff7;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #14687f;
+        }
 
-    .metric-card {
-      background: #f2f9ff;
-      border-radius: 18px;
-      padding: 0.7rem 1.2rem;
-      border-left: 6px solid #328098;
-      margin: 0.5rem 0;
-    }
+        /* Tarjetas de imagen / ilustración */
+        .img-card {
+            background: #f2f9ff;
+            border-radius: 20px;
+            padding: 0.9rem 1.4rem;
+            margin: 0.4rem 0 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            border: 1px solid #d7e8f5;
+            box-shadow: 0 2px 8px rgba(0, 30, 50, 0.04);
+        }
 
-    .estado-led {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem 1.2rem;
-      margin: 0.4rem 0;
-    }
-    .led-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.82rem;
-      font-weight: 500;
-    }
-    .led-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-    .led-dot.green { background: #2e9f6e; }
-    .led-dot.yellow { background: #e8b440; }
-    .led-dot.orange { background: #e07c2e; }
-    .led-dot.red { background: #c73d3d; }
+        .img-card i {
+            font-size: 2.8rem;
+            color: #1d6c89;
+            width: 3.2rem;
+            text-align: center;
+        }
 
-    .footer-page {
-      margin-top: auto;
-      padding-top: 0.8rem;
-      border-top: 2px dashed #d0e2ed;
-      font-size: 0.75rem;
-      color: #2c5f73;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
+        .img-card .desc {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #104c61;
+            flex: 1;
+        }
 
-    /* navegación entre hojas */
-    .nav-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem 2rem;
-      padding: 0.8rem 1rem;
-      background: #e8f1f8;
-      border-top: 1px solid #c7dde9;
-      flex-wrap: wrap;
-    }
-    .nav-controls a {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: white;
-      padding: 0.4rem 1.6rem;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: #0d445a;
-      text-decoration: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      border: 1px solid #b9d2e2;
-      transition: 0.15s;
-    }
-    .nav-controls a:hover {
-      background: #d4e6f2;
-      border-color: #2b7a94;
-    }
-    .nav-controls a i {
-      font-size: 1rem;
-      color: #1d6c89;
-    }
-    .nav-controls .page-indicator {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #1b5d75;
-      background: #d4e3ed;
-      padding: 0.2rem 1.2rem;
-      border-radius: 40px;
-    }
+        .img-card .tag {
+            background: #cde0ed;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #00435a;
+            letter-spacing: 0.3px;
+        }
 
-    /* responsive */
-    @media (max-width: 600px) {
-      .page {
-        padding: 1.2rem 1rem 1.5rem;
-        min-height: 400px;
-      }
-      .page-header h2 {
-        font-size: 1.1rem;
-      }
-      .img-placeholder {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .nav-controls a {
-        padding: 0.3rem 1.2rem;
-        font-size: 0.75rem;
-      }
-    }
-  </style>
+        .img-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin: 0.3rem 0;
+        }
+
+        .img-row .chip {
+            background: #e7f1f9;
+            border-radius: 30px;
+            padding: 0.3rem 1.2rem 0.3rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #0a4a60;
+            border: 1px solid #cadeed;
+        }
+
+        .img-row .chip i {
+            font-size: 1rem;
+            color: #1a6a83;
+        }
+
+        /* Texto y listas */
+        .page p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #1d3b4a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page ul {
+            list-style: none;
+            margin: 0.2rem 0;
+        }
+
+        .page ul li {
+            padding: 0.3rem 0 0.3rem 2rem;
+            position: relative;
+            font-size: 0.92rem;
+            color: #1d3b4a;
+            border-bottom: 1px solid #f0f6fc;
+        }
+
+        .page ul li:last-child {
+            border-bottom: none;
+        }
+
+        .page ul li i {
+            position: absolute;
+            left: 0;
+            top: 0.4rem;
+            color: #1f748f;
+            width: 1.6rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            background: #dcecf5;
+            border-radius: 40px;
+            padding: 0.15rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.7rem;
+            color: #07506b;
+            display: inline-block;
+            letter-spacing: 0.3px;
+            margin-right: 4px;
+        }
+
+        .metric-box {
+            background: #f2f9ff;
+            border-radius: 18px;
+            padding: 0.7rem 1.2rem;
+            border-left: 6px solid #328098;
+            margin: 0.5rem 0;
+            font-size: 0.92rem;
+            color: #1d3b4a;
+        }
+
+        .metric-box i {
+            color: #14687f;
+            margin-right: 6px;
+        }
+
+        /* Estados LED */
+        .led-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.4rem;
+            margin: 0.4rem 0;
+        }
+
+        .led-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #1d3b4a;
+        }
+
+        .led-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .led-dot.green { background: #2e9f6e; }
+        .led-dot.yellow { background: #e8b440; }
+        .led-dot.orange { background: #e07c2e; }
+        .led-dot.red { background: #c73d3d; }
+
+        /* Pie de página */
+        .footer-page {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 2px dashed #dce8f2;
+            font-size: 0.75rem;
+            color: #2c5f73;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.3rem 1rem;
+        }
+
+        .footer-page i {
+            color: #1a6a83;
+            margin-right: 4px;
+        }
+
+        /* Controles de navegación */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.2rem 2.5rem;
+            padding: 0.8rem 1.5rem;
+            background: #ecf4fa;
+            border-top: 1px solid #c7dde9;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 0.4rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #0d445a;
+            text-decoration: none;
+            border: 1px solid #b9d2e2;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .nav-btn:hover {
+            background: #d4e6f2;
+            border-color: #2b7a94;
+            transform: translateY(-1px);
+        }
+
+        .nav-btn i {
+            font-size: 1rem;
+            color: #1d6c89;
+        }
+
+        .page-indicator {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1b5d75;
+            background: #d4e3ed;
+            padding: 0.25rem 1.6rem;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Dots inferiores */
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.7rem;
+            padding: 0.4rem 0 0.7rem;
+            background: #ecf4fa;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #c0d6e5;
+            transition: all 0.25s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #1f748f;
+            transform: scale(1.2);
+            box-shadow: 0 0 0 4px rgba(31, 116, 143, 0.15);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .page {
+                padding: 1.4rem 1.2rem 1.8rem;
+                min-height: 380px;
+            }
+            .page-header h2 {
+                font-size: 1.2rem;
+            }
+            .page-header i {
+                font-size: 1.6rem;
+                width: 2.2rem;
+            }
+            .img-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .img-card i {
+                font-size: 2.2rem;
+                width: 100%;
+                text-align: left;
+            }
+            .nav-btn {
+                padding: 0.3rem 1.2rem;
+                font-size: 0.75rem;
+            }
+            .nav-bar {
+                gap: 0.8rem 1rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .page {
+                padding: 1rem 0.9rem 1.4rem;
+                min-height: 340px;
+            }
+            .page ul li {
+                font-size: 0.82rem;
+                padding-left: 1.6rem;
+            }
+            .metric-box {
+                font-size: 0.82rem;
+                padding: 0.5rem 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="book-container">
-  <!-- SLIDER DE HOJAS (tríptico deslizante) -->
-  <div class="pages-slider" id="slider">
+<div class="triptych">
 
-    <!-- HOJA 1: PORTADA + CONTEXTO / JUSTIFICACIÓN -->
-    <div class="page" id="page1">
-      <div class="page-header">
-        <i class="fas fa-water"></i>
-        <h2>Contexto & Justificación</h2>
-        <span class="page-number">1/3</span>
-      </div>
-      <!-- imagen ilustrativa: río / sensor -->
-      <div class="img-placeholder">
-        <i class="fas fa-river"></i>
-        <span class="img-desc"><strong>Río Huallaga</strong> · Tingo María</span>
-        <span class="img-tag"><i class="fas fa-map-pin"></i> zona vulnerable</span>
-      </div>
-      <p><span class="badge">Desafío</span> Cambio climático intensifica desastres hidrológicos. En Perú, El Niño y SINAGERD demandan soluciones tecnológicas urgentes.</p>
-      <div class="img-row">
-        <span class="mini-img"><i class="fas fa-microchip"></i> ESP32</span>
-        <span class="mini-img"><i class="fas fa-satellite-dish"></i> MQTT/API</span>
-        <span class="mini-img"><i class="fas fa-cloud-rain"></i> Alerta temprana</span>
-      </div>
-      <div class="metric-card">
-        <i class="fas fa-arrow-right" style="color:#1d6c89;"></i> <strong>¿Cómo influye IoT-ESP32?</strong> Detección en tiempo real + reducción de tiempo de respuesta.
-      </div>
-      <ul>
-        <li><i class="fas fa-cube"></i> <strong>Tecnológica</strong> · bajo costo, sensores de precisión.</li>
-        <li><i class="fas fa-coins"></i> <strong>Económica</strong> · escalable frente a estaciones comerciales.</li>
-        <li><i class="fas fa-users"></i> <strong>Social</strong> · protección de comunidades ribereñas.</li>
-        <li><i class="fas fa-graduation-cap"></i> <strong>Académica</strong> · competencias en sistemas embebidos.</li>
-      </ul>
-      <div class="footer-page">
-        <span><i class="fas fa-leaf"></i> UNAS · Tingo María 2026</span>
-        <span><i class="fas fa-user-tie"></i> Mg. Cárdenas Vega</span>
-      </div>
-    </div>
+    <!-- SLIDER -->
+    <div class="slider" id="slider">
 
-    <!-- HOJA 2: ARQUITECTURA + FIRMWARE + UMBRALES -->
-    <div class="page" id="page2">
-      <div class="page-header">
-        <i class="fas fa-sitemap"></i>
-        <h2>Arquitectura & Firmware</h2>
-        <span class="page-number">2/3</span>
-      </div>
-      <!-- imagen ilustrativa: esquema ESP32 + sensores -->
-      <div class="img-placeholder">
-        <i class="fas fa-microchip"></i>
-        <span class="img-desc"><strong>ESP32</strong> · Procesamiento local</span>
-        <span class="img-tag"><i class="fas fa-bolt"></i> 5V / 1A</span>
-      </div>
-      <div style="background:#eaf2f8; border-radius:20px; padding:0.5rem 1rem; margin:0.3rem 0; display:flex; flex-wrap:wrap; gap:0.3rem 1rem;">
-        <span><i class="fas fa-arrow-right"></i> Lectura sensores</span>
-        <span><i class="fas fa-filter"></i> Filtrado (promedio 5)</span>
-        <span><i class="fas fa-ruler"></i> Nivel cm</span>
-        <span><i class="fas fa-stopwatch"></i> Velocidad cm/min</span>
-        <span><i class="fas fa-chart-line"></i> Predicción 3 min</span>
-      </div>
-      <p><i class="fas fa-route" style="color:#1f748f;"></i> <strong>Salidas locales</strong></p>
-      <ul>
-        <li><i class="fas fa-lightbulb"></i> LED Verde (Normal) · Amarillo (Medio) · Rojo (Alto/Crítico)</li>
-        <li><i class="fas fa-bell"></i> Buzzer: intermitente, rápido o alarma continua</li>
-        <li><i class="fas fa-display"></i> OLED: nivel, predicción, lluvia, Tª, Hª</li>
-      </ul>
-      <div style="margin-top:0.4rem;">
-        <span class="badge"><i class="fas fa-table"></i> Umbrales (canaleta 12 cm)</span>
-        <div class="estado-led">
-          <span class="led-item"><span class="led-dot green"></span> Normal 0–5 cm</span>
-          <span class="led-item"><span class="led-dot yellow"></span> Vigil. 5.1–8 cm</span>
-          <span class="led-item"><span class="led-dot orange"></span> Alerta 8.1–10.5 cm</span>
-          <span class="led-item"><span class="led-dot red"></span> Crítico 10.6–12 cm</span>
+        <!-- HOJA 1: Contexto + Justificación -->
+        <div class="page" id="page1">
+            <div class="page-header">
+                <i class="fas fa-globe-americas"></i>
+                <h2>Contexto & Justificación</h2>
+                <span class="page-number">1 / 3</span>
+            </div>
+
+            <div class="img-card">
+                <i class="fas fa-river"></i>
+                <span class="desc"><strong>Río Huallaga</strong> · Tingo María</span>
+                <span class="tag"><i class="fas fa-map-pin"></i> Zona vulnerable</span>
+            </div>
+
+            <p><span class="badge">Desafío</span> El cambio climático intensifica desastres hidrológicos. En Perú, el Fenómeno El Niño y el SINAGERD exigen soluciones tecnológicas urgentes.</p>
+
+            <div class="img-row">
+                <span class="chip"><i class="fas fa-microchip"></i> ESP32</span>
+                <span class="chip"><i class="fas fa-satellite-dish"></i> MQTT / API</span>
+                <span class="chip"><i class="fas fa-cloud-rain"></i> Alerta temprana</span>
+            </div>
+
+            <div class="metric-box">
+                <i class="fas fa-arrow-right"></i> <strong>¿Cómo influye IoT-ESP32?</strong> Detección en tiempo real y reducción del tiempo de respuesta ante emergencias.
+            </div>
+
+            <ul>
+                <li><i class="fas fa-cube"></i> <strong>Tecnológica</strong> · Hardware de bajo costo, sensores de precisión.</li>
+                <li><i class="fas fa-coins"></i> <strong>Económica</strong> · Alternativa escalable frente a estaciones comerciales.</li>
+                <li><i class="fas fa-users"></i> <strong>Social</strong> · Protección de comunidades ribereñas.</li>
+                <li><i class="fas fa-graduation-cap"></i> <strong>Académica</strong> · Competencias en sistemas embebidos IoT.</li>
+            </ul>
+
+            <div class="footer-page">
+                <span><i class="fas fa-leaf"></i> UNAS · Tingo María 2026</span>
+                <span><i class="fas fa-user-tie"></i> Mg. Cárdenas Vega</span>
+            </div>
         </div>
-      </div>
-      <!-- imagen adicional: sensor ultrasónico -->
-      <div class="img-row">
-        <span class="mini-img"><i class="fas fa-ruler-vertical"></i> JSN-SR04T</span>
-        <span class="mini-img"><i class="fas fa-percent"></i> Ep = 1.42%</span>
-        <span class="mini-img"><i class="fas fa-clock"></i> Latencia 0.52s</span>
-      </div>
-      <div class="footer-page">
-        <span><i class="fas fa-wifi"></i> Comunicación estable WiFi</span>
-        <span><i class="fas fa-cloud"></i> Nube · MQTT</span>
-      </div>
+
+        <!-- HOJA 2: Arquitectura + Firmware + Umbrales -->
+        <div class="page" id="page2">
+            <div class="page-header">
+                <i class="fas fa-sitemap"></i>
+                <h2>Arquitectura & Firmware</h2>
+                <span class="page-number">2 / 3</span>
+            </div>
+
+            <div class="img-card">
+                <i class="fas fa-microchip"></i>
+                <span class="desc"><strong>ESP32</strong> · Procesamiento local</span>
+                <span class="tag"><i class="fas fa-bolt"></i> 5V / 1A</span>
+            </div>
+
+            <div style="background:#eef6fc; border-radius:20px; padding:0.5rem 1rem; margin:0.2rem 0; display:flex; flex-wrap:wrap; gap:0.2rem 1.2rem; font-size:0.85rem; color:#0a4a60;">
+                <span><i class="fas fa-arrow-right"></i> Lectura sensores</span>
+                <span><i class="fas fa-filter"></i> Filtrado (promedio 5)</span>
+                <span><i class="fas fa-ruler"></i> Nivel (cm)</span>
+                <span><i class="fas fa-stopwatch"></i> Velocidad (cm/min)</span>
+                <span><i class="fas fa-chart-line"></i> Predicción 3 min</span>
+            </div>
+
+            <p style="margin-top:0.3rem;"><i class="fas fa-route" style="color:#1f748f;"></i> <strong>Salidas locales</strong></p>
+            <ul>
+                <li><i class="fas fa-lightbulb"></i> LED Verde (Normal) · Amarillo (Medio) · Rojo (Alto / Crítico)</li>
+                <li><i class="fas fa-bell"></i> Buzzer: intermitente, rápido o alarma continua</li>
+                <li><i class="fas fa-display"></i> OLED: nivel, predicción, lluvia, temperatura, humedad</li>
+            </ul>
+
+            <div style="margin-top:0.3rem;">
+                <span class="badge"><i class="fas fa-table"></i> Umbrales (canaleta 12 cm)</span>
+                <div class="led-row">
+                    <span class="led-item"><span class="led-dot green"></span> Normal 0–5 cm</span>
+                    <span class="led-item"><span class="led-dot yellow"></span> Vigil. 5.1–8 cm</span>
+                    <span class="led-item"><span class="led-dot orange"></span> Alerta 8.1–10.5 cm</span>
+                    <span class="led-item"><span class="led-dot red"></span> Crítico 10.6–12 cm</span>
+                </div>
+            </div>
+
+            <div class="img-row">
+                <span class="chip"><i class="fas fa-ruler-vertical"></i> JSN-SR04T</span>
+                <span class="chip"><i class="fas fa-percent"></i> Ep = 1.42%</span>
+                <span class="chip"><i class="fas fa-clock"></i> Latencia 0.52s</span>
+            </div>
+
+            <div class="footer-page">
+                <span><i class="fas fa-wifi"></i> Comunicación vía WiFi</span>
+                <span><i class="fas fa-cloud"></i> Nube · MQTT</span>
+            </div>
+        </div>
+
+        <!-- HOJA 3: Resultados + Conclusiones + Integrantes -->
+        <div class="page" id="page3">
+            <div class="page-header">
+                <i class="fas fa-chart-line"></i>
+                <h2>Resultados & Logros</h2>
+                <span class="page-number">3 / 3</span>
+            </div>
+
+            <div class="img-card">
+                <i class="fas fa-bell"></i>
+                <span class="desc"><strong>Alerta temprana</strong> · respuesta en &lt; 5 s</span>
+                <span class="tag"><i class="fas fa-check-circle"></i> Validado</span>
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:0.3rem 1.2rem; background:#eaf4fc; border-radius:20px; padding:0.4rem 1.2rem; margin:0.3rem 0; font-size:0.85rem;">
+                <span><i class="fas fa-check-circle" style="color:#1f8b6b;"></i> Error sensor &lt; 2%</span>
+                <span><i class="fas fa-ban" style="color:#b33;"></i> Sin falsas alarmas por oleaje</span>
+                <span><i class="fas fa-cloud-upload-alt"></i> Comunicación estable</span>
+            </div>
+
+            <div class="metric-box">
+                <i class="fas fa-check-double"></i> <strong>Hipótesis verificada:</strong> el sistema reduce drásticamente los tiempos de respuesta ante inundaciones críticas.
+            </div>
+
+            <ul>
+                <li><i class="fas fa-microchip"></i> Prototipo funcional con integración total (hardware, firmware, nube).</li>
+                <li><i class="fas fa-shield-alt"></i> Componentes IP66 · durabilidad en climas tropicales severos.</li>
+                <li><i class="fas fa-city"></i> Contribución a Smart City en la selva peruana.</li>
+            </ul>
+
+            <div style="background:#eef6fc; border-radius:30px; padding:0.3rem 1.2rem; margin-top:0.3rem; display:flex; flex-wrap:wrap; gap:0.1rem 0.6rem; font-size:0.7rem; font-weight:500; color:#0a4a60;">
+                <span><i class="fas fa-user-graduate"></i> Evaristo Jara J.</span>
+                <span><i class="fas fa-user-graduate"></i> Oriundo Tafur J.</span>
+                <span><i class="fas fa-user-graduate"></i> Queshyac Zavaleta J.</span>
+                <span><i class="fas fa-user-graduate"></i> Mauricio Solorzano A.</span>
+                <span><i class="fas fa-user-graduate"></i> Mays Melendez H.</span>
+                <span><i class="fas fa-user-graduate"></i> Quispe Chavez M.</span>
+            </div>
+
+            <div class="footer-page">
+                <span><i class="fas fa-chalkboard-teacher"></i> Mg. José Antonio Cárdenas Vega</span>
+                <span><i class="fas fa-calendar-alt"></i> 2026 · UNAS</span>
+            </div>
+        </div>
+
     </div>
 
-    <!-- HOJA 3: RESULTADOS + CONCLUSIONES + INTEGRANTES -->
-    <div class="page" id="page3">
-      <div class="page-header">
-        <i class="fas fa-chart-line"></i>
-        <h2>Resultados & Logros</h2>
-        <span class="page-number">3/3</span>
-      </div>
-      <!-- imagen ilustrativa: alerta / dashboard -->
-      <div class="img-placeholder">
-        <i class="fas fa-bell"></i>
-        <span class="img-desc"><strong>Alerta temprana</strong> · respuesta en &lt;5s</span>
-        <span class="img-tag"><i class="fas fa-check-circle"></i> validado</span>
-      </div>
-      <div style="display:flex; flex-wrap:wrap; gap:0.3rem 1rem; background:#e5f1f9; border-radius:20px; padding:0.4rem 1rem; margin:0.3rem 0;">
-        <span><i class="fas fa-check-circle" style="color:#1f8b6b;"></i> Error sensor &lt; 2%</span>
-        <span><i class="fas fa-ban" style="color:#b33;"></i> Sin falsas alarmas por oleaje</span>
-        <span><i class="fas fa-cloud-upload-alt"></i> Comunicación estable</span>
-      </div>
-      <div class="metric-card">
-        <i class="fas fa-check-double" style="color:#136b87;"></i> <strong>Hipótesis verificada:</strong> el sistema reduce drásticamente los tiempos de respuesta ante inundaciones críticas.
-      </div>
-      <ul>
-        <li><i class="fas fa-microchip"></i> Prototipo funcional integración total (hardware, firmware, nube).</li>
-        <li><i class="fas fa-shield-alt"></i> Componentes IP66 · durabilidad en climas tropicales.</li>
-        <li><i class="fas fa-city"></i> Contribución a Smart City en la selva peruana.</li>
-      </ul>
-      <!-- integrantes destacados -->
-      <div style="background:#f0f7fc; border-radius:30px; padding:0.4rem 1.2rem; margin-top:0.3rem; display:flex; flex-wrap:wrap; gap:0.2rem 0.8rem; font-size:0.75rem;">
-        <span><i class="fas fa-user-graduate"></i> Evaristo Jara J.</span>
-        <span><i class="fas fa-user-graduate"></i> Oriundo Tafur J.</span>
-        <span><i class="fas fa-user-graduate"></i> Queshyac Zavaleta J.</span>
-        <span><i class="fas fa-user-graduate"></i> Mauricio Solorzano A.</span>
-        <span><i class="fas fa-user-graduate"></i> Mays Melendez H.</span>
-        <span><i class="fas fa-user-graduate"></i> Quispe Chavez M.</span>
-      </div>
-      <div class="footer-page">
-        <span><i class="fas fa-chalkboard-teacher"></i> Mg. José Antonio Cárdenas Vega</span>
-        <span><i class="fas fa-calendar-alt"></i> 2026 · UNAS</span>
-      </div>
+    <!-- Navegación -->
+    <div class="nav-bar">
+        <button class="nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i> Anterior</button>
+        <span class="page-indicator" id="pageIndicator">1 / 3</span>
+        <button class="nav-btn" id="nextBtn">Siguiente <i class="fas fa-chevron-right"></i></button>
     </div>
-  </div>
 
-  <!-- CONTROLES DE NAVEGACIÓN (deslizante) -->
-  <div class="nav-controls">
-    <a href="#page1" onclick="scrollToPage(0)"><i class="fas fa-chevron-left"></i> Hoja 1</a>
-    <span class="page-indicator" id="pageIndicator">1 / 3</span>
-    <a href="#page3" onclick="scrollToPage(2)">Hoja 3 <i class="fas fa-chevron-right"></i></a>
-  </div>
-  <!-- indicador extra de posición -->
-  <div style="display:flex; justify-content:center; gap:0.6rem; padding:0.3rem 0 0.6rem; background:#e8f1f8;">
-    <span style="width:10px; height:10px; border-radius:50%; background:#1f748f;" id="dot0"></span>
-    <span style="width:10px; height:10px; border-radius:50%; background:#b8cfdf;" id="dot1"></span>
-    <span style="width:10px; height:10px; border-radius:50%; background:#b8cfdf;" id="dot2"></span>
-  </div>
+    <!-- Dots indicadores -->
+    <div class="dots" id="dotsContainer">
+        <button class="dot active" data-index="0"></button>
+        <button class="dot" data-index="1"></button>
+        <button class="dot" data-index="2"></button>
+    </div>
+
 </div>
 
-<!-- Script para control deslizante + indicadores -->
 <script>
-  const slider = document.getElementById('slider');
-  const dots = [document.getElementById('dot0'), document.getElementById('dot1'), document.getElementById('dot2')];
-  const indicator = document.getElementById('pageIndicator');
+    (function() {
+        const slider = document.getElementById('slider');
+        const dots = document.querySelectorAll('.dot');
+        const indicator = document.getElementById('pageIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
 
-  function updateIndicators() {
-    const scrollLeft = slider.scrollLeft;
-    const maxScroll = slider.scrollWidth - slider.clientWidth;
-    const ratio = maxScroll > 0 ? scrollLeft / maxScroll : 0;
-    const index = Math.round(ratio * (dots.length - 1));
-    dots.forEach((dot, i) => {
-      dot.style.background = i === index ? '#1f748f' : '#b8cfdf';
-    });
-    indicator.textContent = `${index + 1} / ${dots.length}`;
-  }
+        // Obtener el número total de páginas
+        const totalPages = dots.length;
 
-  function scrollToPage(index) {
-    const pageWidth = slider.clientWidth;
-    slider.scrollTo({ left: index * pageWidth, behavior: 'smooth' });
-    setTimeout(updateIndicators, 200);
-  }
+        // Función para actualizar indicadores (dots + número de página)
+        function updateIndicators() {
+            const scrollLeft = slider.scrollLeft;
+            const pageWidth = slider.clientWidth;
+            // índice basado en el scroll
+            let index = Math.round(scrollLeft / pageWidth);
+            // asegurar que esté dentro del rango
+            index = Math.min(Math.max(index, 0), totalPages - 1);
 
-  slider.addEventListener('scroll', updateIndicators);
-  window.addEventListener('resize', updateIndicators);
-  // inicializar
-  setTimeout(updateIndicators, 100);
+            // Actualizar dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+
+            // Actualizar número de página
+            indicator.textContent = `${index + 1} / ${totalPages}`;
+        }
+
+        // Función para desplazar a una página específica
+        function goToPage(index) {
+            const pageWidth = slider.clientWidth;
+            const targetScroll = index * pageWidth;
+            slider.scrollTo({ left: targetScroll, behavior: 'smooth' });
+            // La actualización se hará en el evento scroll, pero la llamamos después de un breve retraso para que el scroll termine
+            setTimeout(updateIndicators, 200);
+        }
+
+        // Evento de scroll del slider
+        slider.addEventListener('scroll', updateIndicators);
+
+        // Evento de redimensionamiento (para recalcular)
+        window.addEventListener('resize', updateIndicators);
+
+        // Clic en dots
+        dots.forEach((dot) => {
+            dot.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                goToPage(index);
+            });
+        });
+
+        // Botones anterior / siguiente
+        prevBtn.addEventListener('click', function() {
+            const pageWidth = slider.clientWidth;
+            const currentIndex = Math.round(slider.scrollLeft / pageWidth);
+            const newIndex = Math.max(currentIndex - 1, 0);
+            goToPage(newIndex);
+        });
+
+        nextBtn.addEventListener('click', function() {
+            const pageWidth = slider.clientWidth;
+            const currentIndex = Math.round(slider.scrollLeft / pageWidth);
+            const newIndex = Math.min(currentIndex + 1, totalPages - 1);
+            goToPage(newIndex);
+        });
+
+        // Inicializar indicadores después de un breve retraso para que el DOM esté listo
+        setTimeout(updateIndicators, 150);
+    })();
 </script>
 
 </body>
 </html>
-```
