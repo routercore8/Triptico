@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Tríptico · IoT Hidrológico · UNAS</title>
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f2f7fc;
+      font-family: 'Inter', sans-serif;
+      padding: 1.5rem 1rem 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .triptych {
+      max-width: 1200px;
+      width: 100%;
+      background: white;
+      border-radius: 2.5rem 2.5rem 2rem 2rem;
+      box-shadow: 0 20px 45px -10px rgba(0, 30, 50, 0.25);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    /* === header / cover === */
+    .cover {
+      background: linear-gradient(145deg, #0b2b3d 0%, #1a4b5f 100%);
+      padding: 2rem 1.8rem 1.8rem;
+      color: white;
+      border-bottom: 6px solid #7fc1d9;
+    }
+
+    .cover-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .uni-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      letter-spacing: 0.3px;
+      line-height: 1.3;
+      background: rgba(255,255,255,0.08);
+      padding: 0.3rem 1rem 0.3rem 1.2rem;
+      border-radius: 40px;
+      display: inline-block;
+      backdrop-filter: blur(2px);
+    }
+    .uni-title i {
+      margin-right: 8px;
+      color: #9dd5ed;
+    }
+
+    .year-badge {
+      background: rgba(255,215,100,0.18);
+      padding: 0.3rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1px solid rgba(255,215,100,0.25);
+    }
+
+    .main-title {
+      font-size: clamp(1.8rem, 6vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0.5rem 0 0.25rem;
+      letter-spacing: -0.02em;
+    }
+    .main-title i {
+      color: #f0c27b;
+      margin-right: 0.25rem;
+    }
+
+    .sub-lead {
+      font-size: 1.05rem;
+      font-weight: 400;
+      opacity: 0.85;
+      max-width: 700px;
+      border-left: 4px solid #f0c27b;
+      padding-left: 1rem;
+      margin: 0.5rem 0 0.8rem;
+    }
+
+    .meta-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem 1.5rem;
+      background: rgba(0,0,0,0.15);
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem 0.6rem 2rem;
+      margin-top: 1rem;
+      backdrop-filter: blur(3px);
+    }
+
+    .team-tag {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem 0.9rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .team-tag span {
+      background: rgba(255,255,255,0.08);
+      padding: 0.15rem 0.8rem;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+    .teacher {
+      font-weight: 500;
+      background: #f0c27b20;
+      padding: 0.2rem 1.2rem;
+      border-radius: 40px;
+      border: 1px solid #f0c27b40;
+      font-size: 0.9rem;
+    }
+    .teacher i {
+      margin-right: 6px;
+      color: #f5d79c;
+    }
+
+    /* === contenido en columnas (tríptico) === */
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      background: #ffffff;
+    }
+
+    @media (min-width: 800px) {
+      .columns {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .panel {
+      padding: 1.8rem 1.6rem 2rem;
+      background: white;
+      border-right: 1px solid #e4edf3;
+      transition: background 0.15s;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel:last-child {
+      border-right: none;
+    }
+    .panel:hover {
+      background: #f9fcff;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.2rem;
+      border-bottom: 2px solid #dce9f2;
+      padding-bottom: 0.7rem;
+    }
+    .panel-header i {
+      font-size: 1.6rem;
+      color: #1a5f78;
+      width: 2rem;
+      text-align: center;
+    }
+    .panel-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0a3342;
+      letter-spacing: -0.3px;
+    }
+
+    .panel p, .panel li {
+      font-size: 0.94rem;
+      line-height: 1.5;
+      color: #1d3b4a;
+    }
+
+    .panel ul {
+      list-style: none;
+      margin-top: 0.25rem;
+    }
+    .panel ul li {
+      padding: 0.35rem 0 0.35rem 1.8rem;
+      position: relative;
+      border-bottom: 1px solid #eaf1f7;
+    }
+    .panel ul li:last-child {
+      border-bottom: none;
+    }
+    .panel ul li i {
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      color: #2c7a94;
+      width: 1.4rem;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .badge-dim {
+      background: #e0edf5;
+      border-radius: 30px;
+      padding: 0.2rem 1rem;
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: #07506b;
+      display: inline-block;
+      letter-spacing: 0.3px;
+    }
+
+    .metric-box {
+      background: #f0f7fc;
+      border-radius: 18px;
+      padding: 0.8rem 1.2rem;
+      margin: 0.8rem 0;
+      border-left: 6px solid #3e8ea8;
+    }
+    .metric-box strong {
+      color: #073b4f;
+    }
+
+    .highlight-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-top: 1rem;
+    }
+    .chip {
+      background: #e4eff6;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #13485e;
+    }
+
+    .estado-led {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 1.2rem;
+      margin: 0.5rem 0 0.3rem;
+    }
+    .led-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .led-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .led-dot.green { background: #2e9f6e; }
+    .led-dot.yellow { background: #e8b440; }
+    .led-dot.orange { background: #e07c2e; }
+    .led-dot.red { background: #c73d3d; }
+
+    .footer-note {
+      margin-top: 1.5rem;
+      padding-top: 0.8rem;
+      border-top: 2px dashed #d0e2ed;
+      font-size: 0.8rem;
+      color: #2c5f73;
+      text-align: center;
+    }
+
+    .project-link {
+      background: #154e64;
+      color: white;
+      border-radius: 60px;
+      padding: 0.5rem 1.8rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 0.5rem;
+      border: none;
+      transition: 0.2s;
+      cursor: default;
+    }
+    .project-link i {
+      color: #f5d79c;
+    }
+
+    /* responsive fine */
+    @media (max-width: 600px) {
+      .cover {
+        padding: 1.5rem 1rem;
+      }
+      .panel {
+        padding: 1.5rem 1.2rem;
+      }
+      .meta-grid {
+        flex-direction: column;
+        align-items: flex-start;
+        border-radius: 30px;
+        padding: 0.8rem 1.2rem;
+      }
+      .team-tag span {
+        white-space: normal;
+      }
+    }
+
+    /* small extras */
+    .arquitectura-mini {
+      background: #eaf2f8;
+      border-radius: 20px;
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      margin: 0.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.3rem 0.8rem;
+    }
+    .arquitectura-mini i {
+      color: #1d6c89;
+    }
+    .fw-bold {
+      font-weight: 600;
+      color: #0a3342;
+    }
+    .text-small {
+      font-size: 0.8rem;
+    }
+    .mt-1 { margin-top: 0.7rem; }
+  </style>
+</head>
+<body>
+<div class="triptych">
+
+  <!-- PORTADA / CABECERA -->
+  <div class="cover">
+    <div class="cover-top">
+      <span class="uni-title"><i class="fas fa-leaf"></i> Universidad Nacional Agraria de la Selva</span>
+      <span class="year-badge"><i class="far fa-calendar-alt"></i> Tingo María · 2026</span>
+    </div>
+    <h1 class="main-title"><i class="fas fa-water"></i> Sistema IoT de Monitoreo Hidrológico<br>y Alerta Temprana ante Inundaciones</h1>
+    <div class="sub-lead">
+      Desarrollo con ESP32 para mitigación de riesgos en zonas vulnerables
+    </div>
+
+    <div class="meta-grid">
+      <div class="team-tag">
+        <span><i class="fas fa-user-graduate"></i> Evaristo Jara J.</span>
+        <span><i class="fas fa-user-graduate"></i> Oriundo Tafur J.</span>
+        <span><i class="fas fa-user-graduate"></i> Queshyac Zavaleta J.</span>
+        <span><i class="fas fa-user-graduate"></i> Mauricio Solorzano A.</span>
+        <span><i class="fas fa-user-graduate"></i> Mays Melendez H.</span>
+        <span><i class="fas fa-user-graduate"></i> Quispe Chavez M.</span>
+      </div>
+      <div class="teacher"><i class="fas fa-chalkboard-teacher"></i> Mg. José Antonio Cárdenas Vega</div>
+    </div>
+  </div>
+
+  <!-- TRÍPTICO (3 columnas) -->
+  <div class="columns">
+
+    <!-- COLUMNA 1: CONTEXTO + JUSTIFICACIÓN -->
+    <div class="panel">
+      <div class="panel-header">
+        <i class="fas fa-globe-americas"></i>
+        <h3>Contexto & Justificación</h3>
+      </div>
+      <p><span class="badge-dim">Desafío</span> Cambio climático intensifica desastres. En Perú, El Niño y SINAGERD exigen soluciones urgentes.</p>
+      <p style="margin-top: 0.5rem;"><i class="fas fa-location-dot" style="color:#1f748f; width:1.4rem;"></i> <strong>Río Huallaga</strong> · Tingo María: alta vulnerabilidad ante crecidas repentinas.</p>
+      
+      <div class="metric-box">
+        <i class="fas fa-microchip" style="margin-right: 6px; color:#136b87;"></i> <strong>¿Cómo influye IoT-ESP32?</strong> Detección en tiempo real + reducción de tiempo de respuesta ante emergencias.
+      </div>
+
+      <div style="margin-top: 0.8rem;">
+        <span class="badge-dim" style="background:#c5dde9;"><i class="fas fa-cube"></i> Dimensiones</span>
+        <ul style="margin-top: 0.3rem;">
+          <li><i class="fas fa-microchip"></i> <strong>Tecnológica</strong> · Bajo costo, MQTT/API, sensores de precisión.</li>
+          <li><i class="fas fa-coins"></i> <strong>Económica</strong> · Alternativa escalable frente a estaciones comerciales.</li>
+          <li><i class="fas fa-users"></i> <strong>Social</strong> · Protección de comunidades ribereñas.</li>
+          <li><i class="fas fa-graduation-cap"></i> <strong>Académica</strong> · Competencias en sistemas embebidos IoT.</li>
+        </ul>
+      </div>
+      <div class="footer-note">
+        <i class="fas fa-arrow-right" style="color:#14687f;"></i> SINAGERD · Gestión de riesgos
+      </div>
+    </div>
+
+    <!-- COLUMNA 2: ARQUITECTURA + FIRMWARE + UMBRALES -->
+    <div class="panel">
+      <div class="panel-header">
+        <i class="fas fa-sitemap"></i>
+        <h3>Arquitectura & Firmware</h3>
+      </div>
+      <div class="arquitectura-mini">
+        <i class="fas fa-arrow-right"></i> <span class="fw-bold">ESP32</span> · lectura sensores, filtrado (promedio 5 muestras), cálculo nivel (cm), velocidad (cm/min), predicción lineal 3 min.
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; margin: 0.3rem 0;">
+        <span class="chip"><i class="fas fa-wifi"></i> MQTT/API</span>
+        <span class="chip"><i class="fas fa-cloud"></i> Nube</span>
+        <span class="chip"><i class="fas fa-clock"></i> Latencia local 0.52s</span>
+      </div>
+      <p style="margin-top: 0.2rem;"><i class="fas fa-route" style="color:#1d6c89;"></i> <strong>Salidas locales</strong></p>
+      <ul>
+        <li><i class="fas fa-lightbulb"></i> LED Verde (Normal) · Amarillo (Medio) · Rojo (Alto/Crítico)</li>
+        <li><i class="fas fa-bell"></i> Buzzer: intermitente, rápido o alarma continua</li>
+        <li><i class="fas fa-display"></i> Pantalla OLED (SSD1306) · nivel, predicción, lluvia, Tª, Hª</li>
+      </ul>
+      <div style="margin-top: 0.8rem;">
+        <span class="badge-dim"><i class="fas fa-table"></i> Umbrales (canaleta 12 cm)</span>
+        <div class="estado-led">
+          <span class="led-item"><span class="led-dot green"></span> Normal 0–5 cm</span>
+          <span class="led-item"><span class="led-dot yellow"></span> Vigil. 5.1–8 cm</span>
+          <span class="led-item"><span class="led-dot orange"></span> Alerta 8.1–10.5 cm</span>
+          <span class="led-item"><span class="led-dot red"></span> Crítico 10.6–12 cm</span>
+        </div>
+        <p class="text-small" style="margin-top: 0.2rem;"><i class="fas fa-ruler-vertical"></i> Sensor JSN-SR04T fijado a 18 cm del fondo · Ep = 1.42%</p>
+      </div>
+      <div class="footer-note" style="margin-top: 0.6rem;">
+        <i class="fas fa-bolt"></i> Alimentación USB 5V (mín. 1A) · Power bank compatible
+      </div>
+    </div>
+
+    <!-- COLUMNA 3: RESULTADOS + CONCLUSIONES -->
+    <div class="panel">
+      <div class="panel-header">
+        <i class="fas fa-chart-line"></i>
+        <h3>Resultados & Conclusiones</h3>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+        <div><span class="badge-dim" style="background:#cde1eb;"><i class="fas fa-check-circle"></i> Error sensor</span> <strong>&lt; 2%</strong> · eliminación de falsas alarmas por oleaje.</div>
+        <div><span class="badge-dim" style="background:#cde1eb;"><i class="fas fa-cloud-upload-alt"></i> Comunicación</span> estable vía WiFi local hacia la nube.</div>
+        <div><span class="badge-dim" style="background:#cde1eb;"><i class="fas fa-clock"></i> Alerta física</span> emitida en <strong>&lt; 5 seg</strong> tras umbral crítico.</div>
+      </div>
+      <div class="metric-box" style="margin-top: 0.6rem;">
+        <i class="fas fa-check-double" style="color:#136b87;"></i> <strong>Verificación de hipótesis:</strong> el sistema reduce drásticamente tiempos de respuesta ante inundaciones críticas.
+      </div>
+      <ul style="margin-top: 0.2rem;">
+        <li><i class="fas fa-microchip"></i> Prototipo funcional con integración total (hardware, firmware, nube).</li>
+        <li><i class="fas fa-shield-alt"></i> Componentes IP66 · durabilidad en climas tropicales severos.</li>
+        <li><i class="fas fa-city"></i> Contribución a Smart City en la selva peruana.</li>
+      </ul>
+      <div style="background: #e2eff7; border-radius: 30px; padding: 0.3rem 1.2rem; margin-top: 0.5rem; display: inline-block;">
+        <i class="fas fa-flag-checkered"></i> Conclusión: base tecnológica sólida para gestión de riesgos en Tingo María.
+      </div>
+      <div class="footer-note" style="margin-top: 1rem;">
+        <i class="fas fa-users"></i> Integrantes · Curso IoT · UNAS 2026
+      </div>
+    </div>
+  </div>
+
+  <!-- BANDA INFERIOR (adicional) -->
+  <div style="background: #e8f1f8; padding: 0.9rem 1.8rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 2px solid #bcd5e3;">
+    <div style="display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; font-size: 0.85rem; font-weight: 500; color: #104c61;">
+      <span><i class="fas fa-tachometer-alt"></i> Monitoreo en tiempo real</span>
+      <span><i class="fas fa-ruler"></i> Nivel · velocidad · predicción</span>
+      <span><i class="fas fa-bell"></i> Alertas tempranas locales + nube</span>
+    </div>
+    <div style="display: flex; gap: 0.4rem 1rem; flex-wrap: wrap;">
+      <span class="project-link"><i class="fas fa-robot"></i> ESP32 Platform</span>
+      <span style="background: #0d3b4d; color: white; padding: 0.2rem 1.2rem; border-radius: 40px; font-size: 0.8rem;"><i class="fas fa-water"></i> Río Huallaga</span>
+    </div>
+  </div>
+
+  <!-- small extra: datos adicionales -->
+  <div style="padding: 0.6rem 1.8rem 0.8rem; background: #f5faff; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 2rem; border-top: 1px solid #ddecf5; font-size: 0.8rem; color: #215b70;">
+    <span><i class="fas fa-thermometer-half"></i> Temperatura · Humedad integrados</span>
+    <span><i class="fas fa-satellite-dish"></i> MQTT / API · transmisión eficiente</span>
+    <span><i class="fas fa-battery-three-quarters"></i> Alimentación USB 5V / 1A</span>
+    <span><i class="fas fa-shield-alt"></i> IP66 · resistente</span>
+  </div>
+</div>
+<!-- pie de página sutil -->
+<p style="margin-top: 1.5rem; font-size: 0.75rem; color: #3b7188; opacity: 0.7; text-align: center; max-width: 700px;">
+  <i class="fas fa-code"></i> Tríptico interactivo · Sistema IoT de Monitoreo Hidrológico · UNAS Tingo María 2026 · 
+  <i class="fas fa-user-graduate"></i> Evaristo, Oriundo, Queshyac, Mauricio, Mays, Quispe · Docente Mg. Cárdenas
+</p>
+</body>
+  </html>
